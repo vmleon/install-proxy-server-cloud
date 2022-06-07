@@ -1,8 +1,21 @@
 ---
-- name: Install Squid Proxy Server
+- name: Install Squid Proxy Server and tools
   dnf:
-    name: squid
+    name:
+      - squid
+      - httpd-tools
     update_cache: yes
+- name: Add a user to a password file and ensure permissions are set
+  command: "htpasswd -b -c /etc/squid/passwords {{ lookup('env', 'PROXY_USER') }} {{ lookup('env', 'PROXY_PASSWORD') }}"
+  notify: restart squid
+- name: Copy static files
+  copy:
+    src: ../files/squid.conf
+    dest: /etc/squid
+    owner: root
+    group: root
+    mode: '0640'
+  notify: restart squid
 - name: Enable Squid Proxy Server
   service:
     name: squid.service
@@ -15,8 +28,3 @@
     permanent: yes
     immediate: yes
     state: enabled
-- name: Copy static files
-  copy:
-    src: ../files/squid.conf
-    dest: /etc/squid/squid.conf
-  notify: restart nginx

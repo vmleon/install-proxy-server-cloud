@@ -1,5 +1,5 @@
 ---
-- name: restart nginx
+- name: restart squid
   service:
-    name: nginx
+    name: squid
     state: restarted

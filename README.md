@@ -62,10 +62,19 @@ Apply the infrastructure, with auto approval:
 terraform apply -auto-approve
 ```
 
-Provision with Ansible:
-- NGINX and static content for the frontend
-- Node, pm2, code and dependencies for the backend
+You can generate random strings for `USER` and `PASSWORD` with:
 
+Define `PROXY_USER` with:
+```
+export PROXY_USER=$(openssl rand -base64 32)
+```
+
+Define `PROXY_PASSWORD` with:
+```
+export PROXY_PASSWORD=$(openssl rand -base64 32)
+```
+
+Ansible will deploy Squid proxy and configure the machine.
 ```
 ansible-playbook -i generated/proxy.ini ../ansible/proxy.yaml
 ```
@@ -73,6 +82,37 @@ ansible-playbook -i generated/proxy.ini ../ansible/proxy.yaml
 Print the load balancer IP from the terraform output again:
 ```
 terraform output proxy_public_ips
+```
+
+Create a `PROXY_IP` as well, take the value of `PROXY_PUBLIC_IP` from previous step:
+```
+export PROXY_IP=PROXY_PUBLIC_IP
+```
+
+Test the proxy:
+
+```
+curl --proxy-user $PROXY_USER:$PROXY_PASSWORD -x http://$PROXY_IP:26893 -v http://www.google.com
+```
+
+## Kali Proxychains
+
+On Kali Linux 2022 you can configure proxychains on `/etc/proxychains4.conf` adding:
+
+```
+http PROXY_IP 26893 USER PASSWORD
+```
+
+Check the difference between:
+
+Without proxy:
+```
+curl ifconfig.me
+```
+
+With proxy:
+```
+proxychains curl ifconfig.me
 ```
 
 ## Clean Up
