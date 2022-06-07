@@ -1,6 +1,6 @@
-# Install Proxy Server in the Cloud
+# Install Squid Proxy Server in the Cloud
 
-Deploy with Terraform and Ansible a Proxy Server for ethical hacking.
+Deploy with Terraform and Ansible a [Squid Proxy](http://www.squid-cache.org/) Server for ethical hacking.
 
 ## Requirements
 
@@ -92,7 +92,7 @@ export PROXY_IP=PROXY_PUBLIC_IP
 Test the proxy:
 
 ```
-curl --proxy-user $PROXY_USER:$PROXY_PASSWORD -x http://$PROXY_IP:26893 -v http://www.google.com
+curl --proxy-user $PROXY_USER:$PROXY_PASSWORD -x http://$PROXY_IP:26893 http://ifconfig.me
 ```
 
 ## Kali Proxychains
