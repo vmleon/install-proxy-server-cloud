@@ -1,0 +1,6 @@
+[proxies]
+proxy1 ansible_host=${proxy_public_ip}
+
+[proxies:vars]
+ansible_user=opc
+ansible_private_key_file=~/.ssh/id_rsa

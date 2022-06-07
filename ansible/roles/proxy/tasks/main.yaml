@@ -1,0 +1,22 @@
+---
+- name: Install Squid Proxy Server
+  dnf:
+    name: squid
+    update_cache: yes
+- name: Enable Squid Proxy Server
+  service:
+    name: squid.service
+    state: started
+    enabled: yes
+- name: Add firewall port
+  firewalld:
+    zone: public
+    port: 26893/tcp
+    permanent: yes
+    immediate: yes
+    state: enabled
+- name: Copy static files
+  copy:
+    src: ../files/squid.conf
+    dest: /etc/squid/squid.conf
+  notify: restart nginx
